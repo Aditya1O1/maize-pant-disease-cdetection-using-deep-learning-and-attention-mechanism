@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Corn Leaf Disease Classifier</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .predicted {
+            color: green;
+            font-weight: bold;
+        }
+
+        .alternate {
+            color: orange;
+        }
+
+        .low-confidence {
+            color: red;
+        }
+
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+
+        .binary-result {
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .binary-yes {
+            color: green;
+        }
+
+        .binary-no {
+            color: red;
+        }
+
+        /* NEW STYLES */
+        .top-bar {
+            display: flex;
+            align-items: center;
+            background-color: #f0f0f0;
+            padding: 10px 20px;
+            border-bottom: 2px solid #ccc;
+        }
+
+        .top-bar img {
+            height: 60px;
+            margin-right: 20px;
+        }
+
+        .top-bar h1 {
+            margin: 0;
+            font-size: 28px;
+            color: #333;
+        }
+
+        .section {
+            margin-top: 40px;
+            padding: 0 20px;
+        }
+
+        .section h2 {
+            color: #444;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+        }
+
+        .section p {
+            text-align: justify;
+            line-height: 1.6;
+        }
+
+        .about-me a {
+            color: blue;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- ✅ TOP BAR WITH CORN IMAGE -->
+    <div class="top-bar">
+        <img src="{{ url_for('static', filename='images/corn_image.avif') }}" alt="Corn Image">
+        <h1>Corn Leaf Disease Classifier</h1>
+    </div>
+
+
+    <h1>Upload a Corn Leaf Image</h1>
+
+    {% if error %}
+    <p class="error">{{ error }}</p>
+    {% endif %}
+
+    <form action="/" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept="image/*" required onchange="previewImage(event)">
+        <br><br>
+        <input type="submit" value="Predict">
+    </form>
+
+    <img id="preview" src="#" alt="Image Preview" style="display:none; max-width:300px; margin-top:20px;">
+
+    {% if binary_result is not none %}
+    <hr>
+    <h2>Binary Classification Result</h2>
+    <p class="binary-result">
+        This image is
+        {% if binary_result == 'Corn' %}
+        <span class="binary-yes">a Corn Leaf ✅</span>
+        {% else %}
+        <span class="binary-no">NOT a Corn Leaf ❌</span>
+        {% endif %}
+    </p>
+
+    {% if binary_confidence %}
+    <p>Model confidence: {{ binary_confidence }}%</p>
+    {% endif %}
+
+    <img src="{{ image_url }}" alt="Uploaded Leaf Image" style="max-width:300px; margin-top:10px;">
+    {% endif %}
+
+    {% if binary_result == 'Corn' and predicted_class %}
+    <hr>
+    <h2>Disease Prediction Result</h2>
+    <p><strong>Predicted Class:</strong>
+        <span
+            class="{% if confidence_score > 80 %}predicted{% elif confidence_score > 50 %}alternate{% else %}low-confidence{% endif %}">
+            {{ predicted_class }}
+        </span>
+    </p>
+
+    <p><strong>Confidence Score:</strong> {{ confidence_score }}%</p>
+
+    {% if alternate_guesses %}
+    <h3>Alternate Guesses:</h3>
+    <ul>
+        {% for guess, score in alternate_guesses %}
+        <li>{{ guess }} – {{ score }}%</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% elif binary_result == 'Not Corn' %}
+    <p class="error">⚠️ This image is not detected as a corn leaf. Please upload a valid corn leaf image for disease
+        prediction.</p>
+    {% endif %}
+
+    <!-- ✅ PROJECT DESCRIPTION SECTION -->
+    <div class="section">
+        <h2>Project Description</h2>
+        <p>
+            <strong>Project Title:</strong> Corn Leaf Disease Detection Using Deep Learning and Attention Mechanism
+        </p>
+        <p>
+            Developed a robust deep learning-based web application for the automatic detection of maize (corn) leaf
+            diseases. The project is divided into two stages to ensure accuracy and reliability:
+        </p>
+        <p>
+            <strong>Stage 1 – Binary Classification (Corn vs Non-Corn):</strong><br>
+            Utilized a pre-trained ResNet-18 convolutional neural network model to classify user-uploaded leaf images as
+            either Corn or Not Corn. This step filters out irrelevant or incorrect images and ensures that only valid
+            corn leaf images proceed for disease analysis.
+        </p>
+        <p>
+            <strong>Stage 2 – Disease Classification:</strong><br>
+            For images classified as corn leaves, developed a custom CNN model enhanced with Multi-Head Self-Attention
+            (MHSA) to detect and classify among four corn leaf conditions:
+        <ul>
+            <li>Blight</li>
+            <li>Common Rust</li>
+            <li>Gray Leaf Spot</li>
+            <li>Healthy</li>
+        </ul>
+        This hybrid model architecture leverages the strength of convolutional layers for spatial feature extraction and
+        attention mechanisms to capture contextual and long-range dependencies within leaf images, significantly
+        improving classification accuracy.
+        </p>
+        <p>
+            <strong>Technologies & Tools Used:</strong><br>
+            Python, Flask, HTML/CSS (for web interface)<br>
+            TensorFlow / Keras (for disease classification model)<br>
+            PyTorch (for ResNet-18 binary classifier)<br>
+            Multi-Head Attention Block (custom implementation)<br>
+            PIL, NumPy, TorchVision (for image preprocessing)<br>
+            Deployed locally with image upload and preview support
+        </p>
+        <p>
+            <strong>Key Features:</strong><br>
+            End-to-end pipeline for leaf image upload, validation, classification, and result display<br>
+            Image preview and model confidence display for both binary and disease predictions<br>
+            Visual differentiation of predictions using styled confidence indicators<br>
+            Support for alternate predictions in case of low confidence in the top class
+        </p>
+    </div>
+
+
+    <!-- ✅ ABOUT ME SECTION -->
+    <div class="section about-me">
+        <h2>About Me</h2>
+        <p>
+            I am Aditya Kumar Pandey, currently pursuing M.Tech in Artificial Intelligence and Data Science at IIIT
+            Bhagalpur.
+            I hold an MCA from Banaras Hindu University, Varanasi. Recently, I interned at IIT(ISM) Dhanbad as Winter
+            Research Intern and
+            have previously wokred as AI/ML Engineer Intern at Aavaaz, a US-based startup where contributed to AI-driven
+            web applications.
+
+
+            <br><br>
+            Experienced AI/ML Engineer with a strong background in Machine Learning, Deep Learning, Natural Language
+            Processing (NLP) and LLMs .
+            Proficient in Python, SQL, and data visualization tools like Power BI and MS Excel . Skilled in developing
+            AI models focusing on NLP, deep learning,
+            data preprocessing, and deployment on Microsoft Azure . Proven ability to drive strategic decision-making
+            and enhance operational efficiency.
+
+            <br><br>
+            📄 <a href="https://www.linkedin.com/in/aditya-kumar-pandey-814169252/" target="_blank">Connect with me on
+                LinkedIn</a>
+        </p>
+    </div>
+
+</body>
+
+<script>
+    function previewImage(event) {
+        const preview = document.getElementById('preview');
+        preview.src = URL.createObjectURL(event.target.files[0]);
+        preview.style.display = 'block';
+    }
+</script>
+
+</html>
