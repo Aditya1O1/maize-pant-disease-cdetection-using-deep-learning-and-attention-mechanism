@@ -2,8 +2,10 @@
 
 1. Maize Leaf Disease Detection using Deep Learning and Attention Mechanism
 Designed and deployed a two-stage deep learning web application for automated maize leaf disease detection, supporting large-scale, healthy maize cultivation in Bihar, crucial for food security and ethanol-based biofuel production. 
-   Stage 1: Achieved 98.87% test accuracy using a pre-trained ResNet-18 CNN for binary classification (Maize vs. Non-Maize), effectively filtering out irrelevant inputs. 
-   Stage 2: Built a custom CNN with Multi-Head Self-Attention (MHSA) for multi-class disease classification (Blight, Common Rust, Gray Leaf Spot, Healthy), achieving 91.57% test accuracy with strong F1-scores (Weighted F1-score of 0.93 
+   Stage 1: Achieved 98.87% test accuracy using a pre-trained ResNet-18 CNN for binary classification (Maize vs. Non-Maize), effectively filtering 
+            out irrelevant inputs. 
+   Stage 2: Built a custom CNN with Multi-Head Self-Attention (MHSA) for multi-class disease classification (Blight, Common Rust, Gray Leaf Spot, 
+            Healthy), achieving 91.57% test accuracy with strong F1-scores (Weighted F1-score of 0.93 
             (validation) and 0.92 (test) across four maize leaf classes).
 
 
